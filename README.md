@@ -20,16 +20,16 @@ Objectifs spécifique:
 
 🏗️ Architecture Technique
 Stack Technologique
----
-│Composant │Technologie │Justification │
-|------------|------------|-------|
-│Base de données │PostgreSQL │16SGBD relationnel robuste│
-│support OLAPETL│Python 3.x + Pandas │Manipulation de données flexible│
-│ORM│ SQLAlchemy│ Abstraction base de données, portabilité│
-│Visualisation│ Matplotlib + Seaborn │ Graphiques personnalisables│
-│Génération données │Faker + NumPy │Données réalistes pour tests│
-│Documentation│Jupyter Notebook │Documentation interactive│
+## 🏗️ Stack Technologique
 
+| Composant            | Technologie              | Justification                               |
+|----------------------|--------------------------|---------------------------------------------|
+| Base de données      | PostgreSQL               | SGBD relationnel robuste supportant l’OLAP  |
+| Support ETL / OLAP   | Python 3.x + Pandas      | Manipulation et transformation flexible     |
+| ORM                  | SQLAlchemy               | Abstraction BD et portabilité               |
+| Visualisation        | Matplotlib + Seaborn     | Graphiques analytiques personnalisables     |
+| Génération données   | Faker + NumPy            | Simulation de données réalistes             |
+| Documentation        | Jupyter Notebook         | Documentation interactive et analyses       |
 ---
 Architecture du Système
 ```
@@ -284,6 +284,7 @@ FROM fait_ventes v
 JOIN dim_temps t ON v.date_id = t.date_id
 GROUP BY t.annee, t.mois
 ORDER BY t.annee, t.mois
+
 
 
 
