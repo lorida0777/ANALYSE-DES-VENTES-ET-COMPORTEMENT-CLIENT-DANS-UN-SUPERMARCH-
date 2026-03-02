@@ -136,154 +136,127 @@ sql
 └─────────────────────┘
 ```
 
-Dictionnaire de Données
-📅 DIM_TEMPS (1 096 enregistrements)
-ColonneTypeDescriptiondate_idINTEGER (PK)Identifiant unique de la datedate_completeDATEDate complète (YYYY-MM-DD)jourINTEGERJour du mois (1-31)moisINTEGERMois (1-12)trimestreINTEGERTrimestre (1-4)anneeINTEGERAnnée (2023-2025)jour_semaineINTEGERJour de la semaine (1=Lundi, 7=Dimanche)nom_jourVARCHAR(20)Nom du jour (Lundi, Mardi, ...)semaine_anneeINTEGERNuméro de semaine dans l'annéeest_weekendBOOLEANTRUE si samedi/dimancheest_ferieBOOLEANTRUE si jour férié français
-🛍️ DIM_PRODUIT (50 enregistrements)
-ColonneTypeDescriptionproduit_idINTEGER (PK)Identifiant unique du produitcode_produitVARCHAR(20)Code article (PRD00001, ...)nom_produitVARCHAR(100)Nom commercialcategorieVARCHAR(50)Catégorie (7 catégories)fournisseurVARCHAR(100)Nom du fournisseurprix_unitaireNUMERIC(10,2)Prix de vente unitaire (€)stock_disponibleINTEGERStock actuel
-Catégories : Fruits & Légumes, Viandes & Poissons, Produits laitiers, Épicerie, Boissons, Hygiène & Beauté, Entretien
-👥 DIM_CLIENT (5 000 enregistrements)
-ColonneTypeDescriptionclient_idINTEGER (PK)Identifiant unique du clientageINTEGERÂge (18-80 ans)tranche_ageVARCHAR(10)Segment d'âge (18-25, 26-35, ...)sexeCHAR(1)M ou Fcode_postalVARCHAR(10)Code postalvilleVARCHAR(100)Ville de résidenceregionVARCHAR(100)Région françaisestatut_fideliteVARCHAR(20)Bronze, Silver, Gold, Platinumdate_inscriptionDATEDate d'adhésion programme fidélitésegment_clientVARCHAR(20)Occasionnel, Régulier, VIP
-🏬 DIM_MAGASIN (5 enregistrements)
-ColonneTypeDescriptionmagasin_idINTEGER (PK)Identifiant unique du magasinnom_magasinVARCHAR(100)Nom commercialvilleVARCHAR(100)Ville d'implantationregionVARCHAR(100)Régioncode_postalVARCHAR(10)Code postalsurface_m2INTEGERSurface de vente (m²)type_magasinVARCHAR(50)Hypermarché, Supermarché, Proximité
-Magasins : Paris, Lyon, Marseille, Toulouse, Bordeaux
-💰 FAIT_VENTES (50 000 enregistrements)
-ColonneTypeDescriptionvente_idINTEGER (PK)Identifiant unique de la transactiondate_idINTEGER (FK)Référence à dim_tempsproduit_idINTEGER (FK)Référence à dim_produitclient_idINTEGER (FK)Référence à dim_clientmagasin_idINTEGER (FK)Référence à dim_magasinquantiteINTEGERNombre d'unités venduesmontant_unitaireNUMERIC(10,2)Prix unitaire au moment de la ventemontant_totalNUMERIC(10,2)quantite × montant_unitaireremiseNUMERIC(10,2)Remise fidélité appliquéemontant_netNUMERIC(10,2)Montant après remise (€)
-Remises fidélité :
 
-Bronze : 0%
-Silver : 5%
-Gold : 10%
-Platinum : 15%
+---
 
+# 📊 Modélisation des Données
 
-⚙️ Pipeline ETL
-1️⃣ EXTRACTION (Extract)
-Sources de données
+## ⭐ Schéma en Étoile (Star Schema)
 
-Produits : Génération avec Faker (50 produits, 7 catégories)
-Clients : Génération aléatoire (5 000 profils démographiques)
-Magasins : 5 points de vente répartis en France
-Temps : Calendrier 2023-2025 avec jours fériés français
-Ventes : 50 000 transactions simulées avec logique métier
+### 🔹 Table de Faits
+- **fait_ventes** (50 000 transactions)
 
-Code d'extraction
-pythonimport pandas as pd
-from faker import Faker
+### 🔹 Tables de Dimensions
+- **dim_temps** (Calendrier 2023–2025)
+- **dim_produit** (50 produits, 7 catégories)
+- **dim_client** (5 000 clients)
+- **dim_magasin** (5 magasins en France)
 
-fake = Faker('fr_FR')
+---
 
-# Exemple : Extraction produits
-produits_data = []
-for categorie, items in categories.items():
-    for item in items:
-        produits_data.append({
-            'produit_id': produit_id,
-            'nom_produit': item,
-            'categorie': categorie,
-            'prix_unitaire': round(random.uniform(1.5, 25.0), 2)
-        })
+## 🛍️ Catégories Produits
 
-df_produits = pd.DataFrame(produits_data)
-2️⃣ TRANSFORMATION (Transform)
-Opérations de transformation
-Nettoyage :
+- Fruits & Légumes  
+- Viandes & Poissons  
+- Produits laitiers  
+- Épicerie  
+- Boissons  
+- Hygiène & Beauté  
+- Entretien  
 
-Vérification des valeurs manquantes
-Détection et suppression des doublons
-Validation des types de données
+---
 
-python# Vérification qualité
-for name, df in [('Produits', df_produits), ('Clients', df_clients)]:
-    missing = df.isnull().sum().sum()
-    duplicates = df.duplicated().sum()
-    print(f"{name} - Manquants: {missing}, Doublons: {duplicates}")
-Enrichissement :
+## 👥 Segmentation Client
 
-Calcul des tranches d'âge
-Ajout de clés de substitution (surrogate keys)
-Calcul du panier moyen
-Application des règles de remise selon fidélité
+- Tranches d’âge (18–25, 26–35, etc.)
+- Statut fidélité : Bronze, Silver, Gold, Platinum
+- Segment comportemental : Occasionnel, Régulier, VIP
 
-python# Enrichissement tranche d'âge
-if age < 26:
-    tranche_age = '18-25'
-elif age < 36:
-    tranche_age = '26-35'
-# ...
+---
 
-# Calcul remise
-remise_pct = {'Bronze': 0, 'Silver': 0.05, 'Gold': 0.10, 'Platinum': 0.15}
-remise = montant_total * remise_pct.get(statut_fidelite, 0)
-Validation :
+## 💰 Règles de Remise Fidélité
 
-Cohérence des dates
-Montants positifs
-Quantités > 0
-Intégrité référentielle
+| Statut | Remise |
+|--------|--------|
+| Bronze | 0% |
+| Silver | 5% |
+| Gold | 10% |
+| Platinum | 15% |
 
-3️⃣ CHARGEMENT (Load)
-Stratégie de chargement
-Ordre de chargement (respecter les contraintes de clés étrangères) :
+---
 
-Tables de dimensions (dim_temps, dim_produit, dim_client, dim_magasin)
-Table de faits (fait_ventes)
+# ⚙️ Pipeline ETL
 
-python# Création des tables
-with engine.connect() as conn:
-    for statement in sql_create_tables.split(';'):
-        conn.execute(text(statement))
-    conn.commit()
+## 1️⃣ Extraction
+- Génération des produits
+- Génération des clients
+- Calendrier 3 ans
+- Simulation de 50 000 ventes
 
-# Chargement dimensions
-df_temps.to_sql('dim_temps', engine, if_exists='append', index=False)
-df_produits.to_sql('dim_produit', engine, if_exists='append', index=False)
-df_clients.to_sql('dim_client', engine, if_exists='append', index=False)
-df_magasins.to_sql('dim_magasin', engine, if_exists='append', index=False)
+## 2️⃣ Transformation
+- Nettoyage des valeurs manquantes
+- Suppression des doublons
+- Validation des types
+- Création des tranches d’âge
+- Application des remises fidélité
+- Vérification intégrité référentielle
 
-# Chargement table de faits
-df_ventes.to_sql('fait_ventes', engine, if_exists='append', index=False)
-Optimisations
-Index créés :
-sqlCREATE INDEX idx_ventes_date ON fait_ventes(date_id);
-CREATE INDEX idx_ventes_produit ON fait_ventes(produit_id);
-CREATE INDEX idx_ventes_client ON fait_ventes(client_id);
-CREATE INDEX idx_ventes_magasin ON fait_ventes(magasin_id);
-Avantages :
+## 3️⃣ Chargement
+- Chargement des dimensions
+- Chargement de la table de faits
+- Indexation des clés étrangères
 
-Amélioration des performances de requêtes de 10 à 100×
-Optimisation des jointures multidimensionnelles
-Support efficace des GROUP BY
+---
 
+# 🔍 Analyses OLAP
 
-🔍 Analyses OLAP
-Requêtes Multidimensionnelles Implémentées
-1️⃣ Top 10 Produits par Chiffre d'Affaires
-Objectif : Identifier les produits stars générant le plus de revenus
-sqlSELECT 
-    p.nom_produit,
-    p.categorie,
-    COUNT(v.vente_id) as nb_ventes,
-    SUM(v.quantite) as quantite_totale,
-    SUM(v.montant_net) as ca_total
-FROM fait_ventes v
-JOIN dim_produit p ON v.produit_id = p.produit_id
-GROUP BY p.nom_produit, p.categorie
-ORDER BY ca_total DESC
-LIMIT 10
-Insight : Loi de Pareto (80/20) - 20% des produits génèrent 80% du CA
-2️⃣ Évolution du CA Mensuel
-Objectif : Analyser les tendances temporelles et saisonnalité
-sqlSELECT 
-    t.annee,
-    t.mois,
-    COUNT(DISTINCT v.vente_id) as nb_transactions,
-    SUM(v.montant_net) as ca_mensuel,
-    AVG(v.montant_net) as panier_moyen
-FROM fait_ventes v
-JOIN dim_temps t ON v.date_id = t.date_id
-GROUP BY t.annee, t.mois
-ORDER BY t.annee, t.mois
+## 📌 Top 10 Produits par Chiffre d’Affaires
+Permet d’identifier les produits stratégiques  
+→ Observation possible de la **loi de Pareto (80/20)**
+
+## 📅 Évolution Mensuelle du Chiffre d’Affaires
+Analyse :
+- Saisonnalité
+- Tendances annuelles
+- Panier moyen
+- Volume de transactions
+
+---
+
+# 📈 Résultats Attendus
+
+- Vision 360° des ventes
+- Identification des produits stars
+- Analyse comportementale client
+- Optimisation des stocks
+- Aide à la prise de décision stratégique
+
+---
+
+# 🎓 Compétences Développées
+
+- Modélisation dimensionnelle
+- Conception Data Warehouse
+- Développement pipeline ETL
+- Optimisation requêtes SQL
+- Analyse multidimensionnelle
+- Data Visualisation
+
+---
+
+# 🚀 Conclusion
+
+Ce projet met en œuvre une architecture décisionnelle complète permettant :
+
+✔ Une centralisation des données  
+✔ Une analyse rapide et performante  
+✔ Un support efficace à la décision  
+
+Il constitue une base solide pour évoluer vers :
+- BI avancée
+- Data Mining
+- Machine Learning prédictif
+
 
 
 
