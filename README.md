@@ -59,8 +59,8 @@ Architecture du Système
               │     (Load)     │
               └───────┬────────┘
                       │
-       ┌──────────────▼──────────────┐
-       │   DATA WAREHOUSE (PostgreSQL) │
+       ┌──────────────▼───────────────┐
+       │  DATA WAREHOUSE (PostgreSQL) │
        │      Schéma en Étoile        │
        ├──────────────────────────────┤
        │  • dim_temps                 │
@@ -284,6 +284,7 @@ FROM fait_ventes v
 JOIN dim_temps t ON v.date_id = t.date_id
 GROUP BY t.annee, t.mois
 ORDER BY t.annee, t.mois
+
 
 
 
