@@ -20,7 +20,7 @@ Objectifs spécifique:
 
 🏗️ Architecture Technique
 Stack Technologique
-
+---
 │Composant │Technologie │Justification │
 |------------|------------|-------|
 │Base de données │PostgreSQL │16SGBD relationnel robuste│
@@ -30,7 +30,7 @@ Stack Technologique
 │Génération données │Faker + NumPy │Données réalistes pour tests│
 │Documentation│Jupyter Notebook │Documentation interactive│
 
-
+---
 Architecture du Système
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -284,5 +284,6 @@ FROM fait_ventes v
 JOIN dim_temps t ON v.date_id = t.date_id
 GROUP BY t.annee, t.mois
 ORDER BY t.annee, t.mois
+
 
 
