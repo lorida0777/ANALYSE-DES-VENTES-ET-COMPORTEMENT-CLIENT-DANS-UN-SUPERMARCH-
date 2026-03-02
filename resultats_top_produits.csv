@@ -1,0 +1,11 @@
+nom_produit,categorie,nb_ventes,quantite_totale,ca_total
+Sucre,Épicerie,1049,5897,128575.25
+Eau minérale,Boissons,1104,5920,116333.43
+Savon,Hygiène & Beauté,1168,6465,113644.71
+Dentifrice,Hygiène & Beauté,1114,6009,105787.69
+Saumon,Viandes & Poissons,1114,6234,103052.82
+Café,Épicerie,1044,5467,94422.59
+Sel,Épicerie,1103,6177,89899.54
+Liquide vaisselle,Entretien,1112,5960,89284.36
+Poulet,Viandes & Poissons,1089,6119,86762.71
+Fromage,Produits laitiers,1024,5591,83972.41
