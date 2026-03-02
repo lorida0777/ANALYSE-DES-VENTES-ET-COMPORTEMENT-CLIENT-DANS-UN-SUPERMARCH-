@@ -20,6 +20,7 @@ Objectifs spécifique:
 
 🏗️ Architecture Technique
 Stack Technologique
+```
 │Composant │Technologie │Justification │
 │Base de données │PostgreSQL │16SGBD relationnel robuste│
 │support OLAPETL│Python 3.x + Pandas │Manipulation de données flexible│
@@ -27,8 +28,10 @@ Stack Technologique
 │Visualisation│ Matplotlib + Seaborn │ Graphiques personnalisables│
 │Génération données │Faker + NumPy │Données réalistes pour tests│
 │Documentation│Jupyter Notebook │Documentation interactive│
+```
 
 Architecture du Système
+```
 ┌─────────────────────────────────────────────────────────┐
 │                    SOURCES DE DONNÉES                   │
 ├──────────────┬──────────────┬──────────────┬────────────┤
@@ -75,13 +78,15 @@ Architecture du Système
        │     VISUALISATIONS           │
        │  Dashboards + Rapports       │
        └──────────────────────────────┘
-
+```
+---
 📊 Modélisation des Données
 Schéma en Étoile (Star Schema)
 Le modèle dimensionnel adopté est un schéma en étoile avec :
 
 1 table de faits (fait_ventes) au centre
 4 tables de dimensions autour
+```
 sql
 ┌─────────────────────┐
 │    DIM_TEMPS        │
@@ -128,6 +133,8 @@ sql
 │ surface_m2          │
 │ type_magasin        │
 └─────────────────────┘
+```
+
 Dictionnaire de Données
 📅 DIM_TEMPS (1 096 enregistrements)
 ColonneTypeDescriptiondate_idINTEGER (PK)Identifiant unique de la datedate_completeDATEDate complète (YYYY-MM-DD)jourINTEGERJour du mois (1-31)moisINTEGERMois (1-12)trimestreINTEGERTrimestre (1-4)anneeINTEGERAnnée (2023-2025)jour_semaineINTEGERJour de la semaine (1=Lundi, 7=Dimanche)nom_jourVARCHAR(20)Nom du jour (Lundi, Mardi, ...)semaine_anneeINTEGERNuméro de semaine dans l'annéeest_weekendBOOLEANTRUE si samedi/dimancheest_ferieBOOLEANTRUE si jour férié français
@@ -276,3 +283,4 @@ FROM fait_ventes v
 JOIN dim_temps t ON v.date_id = t.date_id
 GROUP BY t.annee, t.mois
 ORDER BY t.annee, t.mois
+
